@@ -1,692 +1,2069 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+
+  <title>
+    SMFSR | Noise-Started One-Step Real-World Super-Resolution
+  </title>
+
+  <meta
+    name="title"
+    content="SMFSR: Noise-Started One-Step Real-World Super-Resolution via LR-Conditioned SplitMeanFlow and GAN Refinement"
+  >
+
+  <meta
+    name="description"
+    content="SMFSR is a noise-started one-step real-world image super-resolution framework using LR-conditioned SplitMeanFlow and GAN refinement."
+  >
+
+  <meta
+    name="keywords"
+    content="SMFSR, real-world image super-resolution, Real-ISR, one-step diffusion, SplitMeanFlow, GAN refinement, image restoration"
+  >
+
+  <meta
+    name="author"
+    content="Wei Zhu, Kai Zhang, Yu Zheng, Lei Luo, Yong Guo, Jian Yang"
+  >
+
+  <meta name="robots" content="index, follow">
+
 
   <!-- =========================================================
-       SMFSR Project Page
-       This file is designed to replace the template index.html.
-       Keep the existing static/ folder from Academic Project Page Template.
-       Search for "TODO" to find every place you may want to edit.
+       Project Page URL
        ========================================================= -->
 
-  <!-- Primary Meta Tags -->
-  <meta name="title" content="SMFSR: Noise-Started One-Step Real-World Super-Resolution via LR-Conditioned SplitMeanFlow and GAN Refinement">
-  <meta name="description" content="SMFSR is a noise-started one-step framework for real-world image super-resolution using LR-conditioned SplitMeanFlow and GAN-based detail refinement.">
-  <meta name="keywords" content="real-world image super-resolution, diffusion models, SplitMeanFlow">
-  <meta name="author" content="Wei Zhu, Kai Zhang, Yu Zheng, Lei Luo, Yong Guo, Jian Yang">
-  <meta name="robots" content="index, follow">
-  <meta name="language" content="English">
+  <link
+    rel="canonical"
+    href="https://wzhu121.github.io/projects/SMFSR/"
+  >
 
-  <!-- TODO LINK: Replace with the final public project-page URL. -->
-  <link rel="canonical" href="https://wzhu121.github.io/projects/SMFSR/">
 
-  <!-- Open Graph -->
+  <!-- =========================================================
+       Open Graph
+       ========================================================= -->
+
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="SMFSR Project Page">
-  <meta property="og:title" content="SMFSR: Noise-Started One-Step Real-World Super-Resolution via LR-Conditioned SplitMeanFlow and GAN Refinement">
-  <meta property="og:description" content="Noise-started one-step Real-ISR with LR-conditioned SplitMeanFlow and GAN-based detail refinement.">
-  <!-- TODO LINK: Replace if your final project-page URL is different. -->
-  <meta property="og:url" content="https://wzhu121.github.io/projects/SMFSR/">
-  <!-- TODO IMAGE: Export a 1200x630 preview image to static/images/social_preview.png. -->
-  <meta property="og:image" content="static/images/social_preview.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="SMFSR research preview">
 
-  <!-- Twitter / X -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="SMFSR: Noise-Started One-Step Real-World Super-Resolution">
-  <meta name="twitter:description" content="Noise-started one-step Real-ISR with LR-conditioned SplitMeanFlow and GAN-based detail refinement.">
-  <!-- TODO IMAGE: Same preview image as above. -->
-  <meta name="twitter:image" content="static/images/social_preview.png">
+  <meta
+    property="og:site_name"
+    content="SMFSR Project Page"
+  >
 
-  <!-- Academic metadata -->
-  <meta name="citation_title" content="Noise-Started One-Step Real-World Super-Resolution via LR-Conditioned SplitMeanFlow and GAN Refinement">
-  <meta name="citation_author" content="Zhu, Wei">
-  <meta name="citation_author" content="Zhang, Kai">
-  <meta name="citation_author" content="Zheng, Yu">
-  <meta name="citation_author" content="Luo, Lei">
-  <meta name="citation_author" content="Guo, Yong">
-  <meta name="citation_author" content="Yang, Jian">
-  <!-- TODO: Add citation_publication_date and citation_conference_title after the venue/year are final. -->
-  <!-- TODO LINK: Upload the paper PDF to static/pdfs/SMFSR.pdf, or replace this with the official paper URL. -->
-  <meta name="citation_pdf_url" content="static/pdfs/SMFSR.pdf">
+  <meta
+    property="og:title"
+    content="SMFSR: Noise-Started One-Step Real-World Super-Resolution via LR-Conditioned SplitMeanFlow and GAN Refinement"
+  >
 
-  <meta name="theme-color" content="#2563eb">
-  <meta name="msapplication-TileColor" content="#2563eb">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta
+    property="og:description"
+    content="Noise-started one-step Real-ISR with LR-conditioned SplitMeanFlow and GAN refinement."
+  >
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://ajax.googleapis.com">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <meta
+    property="og:url"
+    content="https://wzhu121.github.io/projects/SMFSR/"
+  >
 
-  <title>SMFSR | Noise-Started One-Step Real-World Super-Resolution</title>
+  <meta
+    property="og:image"
+    content="https://wzhu121.github.io/projects/SMFSR/static/images/teaser.png"
+  >
 
-  <!-- Keep these files from the original template. -->
-  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
-  <link rel="apple-touch-icon" href="static/images/favicon.ico">
-  <link rel="stylesheet" href="static/css/bulma.min.css">
-  <link rel="stylesheet" href="static/css/index.css">
-  <link rel="preload" href="static/css/fontawesome.all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript>
-    <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  </noscript>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta
+    property="og:image:alt"
+    content="SMFSR project teaser"
+  >
 
-  <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="static/js/fontawesome.all.min.js"></script>
-  <script defer src="static/js/index.js"></script>
+
+  <!-- =========================================================
+       Twitter / X
+       ========================================================= -->
+
+  <meta
+    name="twitter:card"
+    content="summary_large_image"
+  >
+
+  <meta
+    name="twitter:title"
+    content="SMFSR: Noise-Started One-Step Real-World Super-Resolution"
+  >
+
+  <meta
+    name="twitter:description"
+    content="Noise-started one-step Real-ISR with LR-conditioned SplitMeanFlow and GAN refinement."
+  >
+
+  <meta
+    name="twitter:image"
+    content="https://wzhu121.github.io/projects/SMFSR/static/images/teaser.png"
+  >
+
+
+  <!-- =========================================================
+       Academic metadata
+       ========================================================= -->
+
+  <meta
+    name="citation_title"
+    content="Noise-Started One-Step Real-World Super-Resolution via LR-Conditioned SplitMeanFlow and GAN Refinement"
+  >
+
+  <meta
+    name="citation_author"
+    content="Zhu, Wei"
+  >
+
+  <meta
+    name="citation_author"
+    content="Zhang, Kai"
+  >
+
+  <meta
+    name="citation_author"
+    content="Zheng, Yu"
+  >
+
+  <meta
+    name="citation_author"
+    content="Luo, Lei"
+  >
+
+  <meta
+    name="citation_author"
+    content="Guo, Yong"
+  >
+
+  <meta
+    name="citation_author"
+    content="Yang, Jian"
+  >
+
+  <meta
+    name="citation_publication_date"
+    content="2026"
+  >
+
+  <meta
+    name="citation_pdf_url"
+    content="https://arxiv.org/pdf/2605.09328"
+  >
+
+
+  <!-- =========================================================
+       CSS
+       ========================================================= -->
 
   <style>
+
     :root {
-      --smfsr-accent: #2563eb;
-      --smfsr-ink: #20242b;
-      --smfsr-muted: #667085;
-      --smfsr-soft: #f7f9fc;
-      --smfsr-border: #e5e7eb;
+
+      --ink: #182033;
+      --text: #344054;
+      --muted: #667085;
+
+      --line: #e7eaf0;
+      --soft: #f7f8fb;
+
+      --paper: #ffffff;
+
+      --accent: #e46bb0;
+      --accent-dark: #c84f97;
+
+      --link: #2563eb;
+
+      --button: #222936;
+
+      --shadow:
+        0 12px 34px
+        rgba(16, 24, 40, 0.07);
+
     }
+
+
+    * {
+
+      box-sizing: border-box;
+
+    }
+
+
+    html {
+
+      scroll-behavior: smooth;
+
+    }
+
 
     body {
-      font-family: "Inter", sans-serif;
-      color: var(--smfsr-ink);
+
+      margin: 0;
+
+      color: var(--text);
+
+      background: var(--paper);
+
+      font-family:
+        Inter,
+        ui-sans-serif,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+      -webkit-font-smoothing: antialiased;
+
+      text-rendering: optimizeLegibility;
+
     }
 
-    .publication-title {
-      line-height: 1.14;
-      letter-spacing: -0.025em;
-      max-width: 1100px;
-      margin-left: auto;
-      margin-right: auto;
+
+    img {
+
+      max-width: 100%;
+
     }
 
-    .author-block {
+
+    a {
+
+      color: var(--link);
+
+      text-decoration: none;
+
+    }
+
+
+    a:hover {
+
+      text-decoration: underline;
+
+    }
+
+
+    /* =========================================================
+       Containers
+       ========================================================= */
+
+
+    .page-width {
+
+      width: min(
+        1180px,
+        calc(100% - 40px)
+      );
+
+      margin: 0 auto;
+
+    }
+
+
+    .figure-width {
+
+      width: min(
+        1000px,
+        calc(100% - 32px)
+      );
+
+      margin: 0 auto;
+
+    }
+
+
+    /* =========================================================
+       Hero
+       ========================================================= */
+
+
+    .hero {
+
+      padding:
+        72px
+        0
+        34px;
+
+      text-align: center;
+
+    }
+
+
+    .project-name {
+
       display: inline-block;
-      margin: 0 0.12rem;
-    }
 
-    .affiliation-line {
-      color: var(--smfsr-muted);
-      margin-top: 0.65rem;
-      line-height: 1.7;
-    }
+      margin-bottom: 14px;
 
-    .project-kicker {
-      display: inline-block;
-      font-weight: 700;
-      letter-spacing: 0.08em;
+      color: var(--accent-dark);
+
+      font-size: 0.86rem;
+
+      font-weight: 800;
+
+      letter-spacing: 0.14em;
+
       text-transform: uppercase;
-      color: var(--smfsr-accent);
-      margin-bottom: 0.9rem;
+
+      font-size: 4.6rem;
+
     }
 
-    .publication-links {
-      margin-top: 1.4rem;
+
+    .paper-title {
+
+      max-width: 1120px;
+
+      margin: 0 auto;
+
+      color: var(--ink);
+
+      font-size:
+        clamp(
+          2.2rem,
+          4.6vw,
+          4.05rem
+        );
+
+      font-weight: 800;
+
+      line-height: 1.08;
+
+      letter-spacing: -0.035em;
+
     }
 
-    .hero-figure,
-    .section-figure {
+
+    .authors {
+
+      margin-top: 24px;
+
+      color: #293244;
+
+      font-size:
+        clamp(
+          1rem,
+          1.8vw,
+          1.22rem
+        );
+
+      line-height: 1.9;
+
+    }
+
+
+    .author {
+
+      display: inline-block;
+
+      white-space: nowrap;
+
+    }
+
+
+    .affiliations {
+
+      max-width: 980px;
+
+      margin:
+        7px
+        auto
+        0;
+
+      color: var(--muted);
+
+      font-size: 0.98rem;
+
+      line-height: 1.75;
+
+    }
+
+
+    .paper-meta {
+
+      margin-top: 8px;
+
+      color: var(--muted);
+
+      font-size: 0.94rem;
+
+    }
+
+
+    /* =========================================================
+       Top buttons
+       ========================================================= */
+
+
+    .actions {
+
+      display: flex;
+
+      flex-wrap: wrap;
+
+      justify-content: center;
+
+      gap: 10px;
+
+      margin-top: 26px;
+
+    }
+
+
+    .action-button {
+
+      display: inline-flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      gap: 8px;
+
+      min-height: 44px;
+
+      padding:
+        0
+        18px;
+
+      border:
+        1px
+        solid
+        var(--button);
+
+      border-radius: 999px;
+
+      color: #ffffff;
+
+      background: var(--button);
+
+      font-size: 0.96rem;
+
+      font-weight: 700;
+
+      line-height: 1;
+
+      transition:
+        transform 0.16s ease,
+        box-shadow 0.16s ease,
+        background 0.16s ease;
+
+    }
+
+
+    .action-button:hover {
+
+      color: #ffffff;
+
+      background: #111827;
+
+      text-decoration: none;
+
+      transform:
+        translateY(-1px);
+
+      box-shadow:
+        0
+        8px
+        20px
+        rgba(17, 24, 39, 0.16);
+
+    }
+
+
+    .action-icon {
+
+      display: inline-flex;
+
+      width: 19px;
+      height: 19px;
+
+      align-items: center;
+
+      justify-content: center;
+
+      flex: 0 0 auto;
+
+    }
+
+
+    .action-icon svg {
+
+      width: 19px;
+      height: 19px;
+
+      fill: none;
+
+      stroke: currentColor;
+
+      stroke-width: 1.9;
+
+      stroke-linecap: round;
+      stroke-linejoin: round;
+
+    }
+
+
+    .hf-icon {
+
+      width: auto;
+
+      font-size: 1.05rem;
+
+      line-height: 1;
+
+    }
+
+
+    /* =========================================================
+       Sections
+       ========================================================= */
+
+
+    .section {
+
+      padding:
+        58px
+        0;
+
+    }
+
+
+    .section.soft {
+
+      background: var(--soft);
+
+    }
+
+
+    .section-heading {
+
+      margin:
+        0
+        auto
+        28px;
+
+      text-align: center;
+
+    }
+
+
+    .section-heading h2 {
+
+      margin: 0;
+
+      color: var(--ink);
+
+      font-size:
+        clamp(
+          1.85rem,
+          3.3vw,
+          2.65rem
+        );
+
+      font-weight: 800;
+
+      line-height: 1.15;
+
+      letter-spacing: -0.025em;
+
+    }
+
+
+    .section-heading::after {
+
+      content: "";
+
       display: block;
-      width: 100%;
-      height: auto;
-      border-radius: 12px;
-      background: white;
+
+      width: 82px;
+      height: 4px;
+
+      margin:
+        18px
+        auto
+        0;
+
+      border-radius: 999px;
+
+      background:
+        linear-gradient(
+          90deg,
+          #ef7ac3,
+          #ec5f8e
+        );
+
     }
 
-    .figure-frame {
-      border: 1px solid var(--smfsr-border);
+
+    /* =========================================================
+       Images
+       ========================================================= */
+
+
+    .figure-shell {
+
+      margin:
+        0
+        auto;
+
+      overflow: hidden;
+
+      border:
+        1px
+        solid
+        var(--line);
+
       border-radius: 14px;
-      padding: 12px;
-      background: white;
-      box-shadow: 0 10px 32px rgba(16, 24, 40, 0.06);
+
+      background: #ffffff;
+
+      box-shadow:
+        var(--shadow);
+
     }
+
+
+    .figure-shell.teaser {
+
+      max-width: 1120px;
+
+    }
+
+
+    .figure-shell.method {
+
+      max-width: 1360px;
+
+    }
+
+
+    .figure-shell.results,
+    .figure-shell.diversity {
+
+      max-width: 1500px;
+
+    }
+
+
+    .paper-figure {
+
+      display: block;
+
+      width: 100%;
+
+      height: auto;
+
+      margin: 0;
+
+    }
+
 
     .figure-caption {
-      max-width: 980px;
-      margin: 1rem auto 0;
-      color: var(--smfsr-muted);
-      line-height: 1.65;
-    }
 
-    .lead-copy {
-      font-size: 1.08rem;
-      line-height: 1.85;
-    }
+      max-width: 1000px;
 
-    .section-title-wrap {
+      margin:
+        17px
+        auto
+        0;
+
+      padding:
+        0
+        8px;
+
+      color: var(--muted);
+
+      font-size: 0.98rem;
+
+      line-height: 1.72;
+
       text-align: center;
-      margin-bottom: 2rem;
+
     }
 
-    .section-eyebrow {
-      color: var(--smfsr-accent);
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-size: 0.78rem;
+
+    /* =========================================================
+       Text
+       ========================================================= */
+
+
+    .paper-copy {
+
+      max-width: 940px;
+
+      margin:
+        0
+        auto;
+
+      color: var(--text);
+
+      font-size: 1.04rem;
+
+      line-height: 1.9;
+
+      text-align: justify;
+
     }
 
-    .idea-card,
-    .metric-card {
-      height: 100%;
-      border: 1px solid var(--smfsr-border);
-      border-radius: 14px;
-      padding: 1.35rem;
-      background: white;
-      box-shadow: 0 6px 24px rgba(16, 24, 40, 0.05);
+
+    .paper-copy p {
+
+      margin:
+        0
+        0
+        1.05em;
+
     }
 
-    .idea-card h3,
-    .metric-card h3 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 0.55rem;
+
+    .paper-copy p:last-child {
+
+      margin-bottom: 0;
+
     }
 
-    .idea-card p,
-    .metric-card p {
-      color: var(--smfsr-muted);
-      line-height: 1.65;
-    }
-
-    .metric-value {
-      display: block;
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--smfsr-accent);
-      margin-bottom: 0.15rem;
-    }
-
-    .metric-label {
-      display: block;
-      font-weight: 700;
-      margin-bottom: 0.35rem;
-    }
-
-    .results-table-wrap {
-      overflow-x: auto;
-      border: 1px solid var(--smfsr-border);
-      border-radius: 12px;
-      background: white;
-    }
-
-    .results-table {
-      min-width: 720px;
-      margin-bottom: 0 !important;
-    }
-
-    .results-table th,
-    .results-table td {
-      vertical-align: middle !important;
-    }
-
-    .results-table .ours {
-      font-weight: 700;
-      color: var(--smfsr-accent);
-    }
-
-    .soft-section {
-      background: var(--smfsr-soft);
-    }
 
     .method-copy {
-      max-width: 950px;
-      margin: 1.2rem auto 0;
-      line-height: 1.8;
-      color: #3f4652;
+
+      margin-top: 24px;
+
     }
 
-    .todo-note {
-      border-left: 4px solid #f59e0b;
-      background: #fffbeb;
-      color: #7c5a08;
-      padding: 0.9rem 1rem;
-      border-radius: 8px;
-      margin: 1rem 0;
-      font-size: 0.95rem;
-    }
 
-    .bibtex-block {
+    /* =========================================================
+       BibTeX
+       ========================================================= */
+
+
+    .bibtex-wrap {
+
       position: relative;
+
+      max-width: 1040px;
+
+      margin:
+        0
+        auto;
+
     }
+
+
+    .bibtex-wrap pre {
+
+      margin: 0;
+
+      padding:
+        24px
+        96px
+        24px
+        24px;
+
+      overflow-x: auto;
+
+      border:
+        1px
+        solid
+        var(--line);
+
+      border-radius: 14px;
+
+      color: #253047;
+
+      background: #f4f6f8;
+
+      font-family:
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        Menlo,
+        monospace;
+
+      font-size: 0.91rem;
+
+      line-height: 1.7;
+
+      white-space: pre;
+
+      box-shadow:
+        0
+        8px
+        26px
+        rgba(16, 24, 40, 0.04);
+
+    }
+
+
+    .copy-button {
+
+      position: absolute;
+
+      top: 14px;
+      right: 14px;
+
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 7px;
+
+      min-height: 36px;
+
+      padding:
+        0
+        12px;
+
+      border:
+        1px
+        solid
+        #d5dae3;
+
+      border-radius: 9px;
+
+      color: #3d475a;
+
+      background: #ffffff;
+
+      cursor: pointer;
+
+      font: inherit;
+
+      font-size: 0.88rem;
+
+      font-weight: 700;
+
+    }
+
+
+    .copy-button:hover {
+
+      border-color: #bcc4d0;
+
+      background: #fbfcfd;
+
+    }
+
+
+    /* =========================================================
+       Footer
+       ========================================================= */
+
 
     .footer {
-      padding-top: 2.5rem;
-      padding-bottom: 2.5rem;
+
+      padding:
+        34px
+        20px
+        42px;
+
+      border-top:
+        1px
+        solid
+        var(--line);
+
+      color: var(--muted);
+
+      background: #fbfbfc;
+
+      font-size: 0.92rem;
+
+      line-height: 1.7;
+
+      text-align: center;
+
     }
 
-    @media (max-width: 768px) {
-      .publication-title {
-        font-size: 2rem !important;
+
+    .footer p {
+
+      margin: 0;
+
+    }
+
+
+    /* =========================================================
+       Mobile
+       ========================================================= */
+
+
+    @media
+    (max-width: 768px) {
+
+
+      .page-width {
+
+        width:
+          min(
+            100% - 28px,
+            1180px
+          );
+
       }
 
-      .metric-value {
-        font-size: 1.65rem;
+
+      .figure-width {
+
+        width:
+          min(
+            100% - 20px,
+            1500px
+          );
+
       }
+
+
+      .hero {
+
+        padding:
+          46px
+          0
+          24px;
+
+      }
+
+
+      .paper-title {
+
+        font-size:
+          clamp(
+            2rem,
+            9.5vw,
+            3rem
+          );
+
+        line-height: 1.1;
+
+      }
+
+
+      .authors {
+
+        margin-top: 20px;
+
+        font-size: 1rem;
+
+        line-height: 1.75;
+
+      }
+
+
+      .affiliations {
+
+        font-size: 0.9rem;
+
+      }
+
+
+      .section {
+
+        padding:
+          42px
+          0;
+
+      }
+
+
+      .section-heading {
+
+        margin-bottom: 22px;
+
+      }
+
+
+      .section-heading::after {
+
+        width: 66px;
+        height: 3px;
+
+        margin-top: 14px;
+
+      }
+
+
+      .figure-shell {
+
+        border-radius: 10px;
+
+      }
+
+
+      .figure-caption {
+
+        margin-top: 13px;
+
+        font-size: 0.91rem;
+
+        line-height: 1.62;
+
+      }
+
+
+      .paper-copy {
+
+        font-size: 0.97rem;
+
+        line-height: 1.78;
+
+        text-align: left;
+
+      }
+
+
+      .bibtex-wrap pre {
+
+        padding:
+          64px
+          16px
+          18px;
+
+        font-size: 0.82rem;
+
+      }
+
+
+      .copy-button {
+
+        top: 12px;
+        right: 12px;
+
+      }
+
     }
+
+
+    /* =========================================================
+       Reduced Motion
+       ========================================================= */
+
+
+    @media
+    (prefers-reduced-motion: reduce) {
+
+
+      html {
+
+        scroll-behavior: auto;
+
+      }
+
+
+      .action-button {
+
+        transition: none;
+
+      }
+
+    }
+
   </style>
 
-  <!-- Structured data. TODO: Fill venue/year once final. -->
+
+  <!-- =========================================================
+       Structured Data
+       ========================================================= -->
+
   <script type="application/ld+json">
+
   {
     "@context": "https://schema.org",
+
     "@type": "ScholarlyArticle",
-    "headline": "Noise-Started One-Step Real-World Super-Resolution via LR-Conditioned SplitMeanFlow and GAN Refinement",
-    "description": "SMFSR is a noise-started one-step Real-ISR framework via LR-conditioned SplitMeanFlow and GAN refinement.",
+
+    "headline":
+      "Noise-Started One-Step Real-World Super-Resolution via LR-Conditioned SplitMeanFlow and GAN Refinement",
+
+    "datePublished":
+      "2026-05-10",
+
     "author": [
-      {"@type": "Person", "name": "Wei Zhu", "affiliation": {"@type": "Organization", "name": "Nanjing University of Science and Technology"}},
-      {"@type": "Person", "name": "Kai Zhang", "affiliation": {"@type": "Organization", "name": "Nanjing University"}},
-      {"@type": "Person", "name": "Yu Zheng", "affiliation": {"@type": "Organization", "name": "Nanjing University of Science and Technology"}},
-      {"@type": "Person", "name": "Lei Luo", "affiliation": {"@type": "Organization", "name": "Nanjing University of Science and Technology"}},
-      {"@type": "Person", "name": "Yong Guo", "affiliation": {"@type": "Organization", "name": "Huawei"}},
-      {"@type": "Person", "name": "Jian Yang", "affiliation": [{"@type": "Organization", "name": "Nanjing University of Science and Technology"}, {"@type": "Organization", "name": "Nanjing University"}]}
+
+      {
+        "@type": "Person",
+        "name": "Wei Zhu"
+      },
+
+      {
+        "@type": "Person",
+        "name": "Kai Zhang"
+      },
+
+      {
+        "@type": "Person",
+        "name": "Yu Zheng"
+      },
+
+      {
+        "@type": "Person",
+        "name": "Lei Luo"
+      },
+
+      {
+        "@type": "Person",
+        "name": "Yong Guo"
+      },
+
+      {
+        "@type": "Person",
+        "name": "Jian Yang"
+      }
+
     ],
-    "url": "https://wzhu121.github.io/projects/SMFSR/",
-    "image": "static/images/social_preview.png",
-    "keywords": ["real-world image super-resolution", "one-step diffusion", "SplitMeanFlow", "GAN refinement", "computer vision"],
-    "isAccessibleForFree": true
+
+    "url":
+      "https://arxiv.org/abs/2605.09328",
+
+    "sameAs": [
+
+      "https://github.com/wzhu121/SMFSR",
+
+      "https://huggingface.co/zw121/SMFSR"
+
+    ],
+
+    "image":
+      "https://wzhu121.github.io/projects/SMFSR/static/images/teaser.png",
+
+    "isAccessibleForFree":
+      true
+
   }
+
   </script>
+
 </head>
 
+
 <body>
-  <main id="main-content">
 
-    <!-- =======================================================
+
+  <main>
+
+
+    <!-- =========================================================
          HERO
-         ======================================================= -->
-    <section class="hero">
-      <div class="hero-body">
-        <div class="container is-max-desktop">
-          <div class="columns is-centered">
-            <div class="column has-text-centered">
-              <span class="project-kicker">SMFSR</span>
+         ========================================================= -->
 
-              <h1 class="title is-1 publication-title">
-                Noise-Started One-Step Real-World Super-Resolution via LR-Conditioned SplitMeanFlow and GAN Refinement
-              </h1>
+    <header class="hero">
 
-              <div class="is-size-5 publication-authors">
-                <!-- TODO OPTIONAL LINKS: If an author has a personal homepage, wrap the name in an <a href="..."> tag. -->
-                <span class="author-block">Wei Zhu<sup>1</sup>,</span>
-                <span class="author-block">Kai Zhang<sup>2,*</sup>,</span>
-                <span class="author-block">Yu Zheng<sup>1</sup>,</span>
-                <span class="author-block">Lei Luo<sup>1</sup>,</span>
-                <span class="author-block">Yong Guo<sup>3</sup>,</span>
-                <span class="author-block">Jian Yang<sup>1,2,*</sup></span>
-              </div>
 
-              <div class="affiliation-line">
-                <sup>1</sup>Nanjing University of Science and Technology &nbsp;&nbsp;
-                <sup>2</sup>Nanjing University &nbsp;&nbsp;
-                <sup>3</sup>Huawei<br>
-                <small><sup>*</sup>Corresponding authors</small>
-              </div>
+      <div class="page-width">
 
-              <!-- TODO VENUE: Add a line here when the conference/journal is final.
-                   Example: <p class="has-text-weight-semibold mt-3">CVPR 2027</p>
-              -->
 
-              <div class="publication-links">
-                <!-- PAPER: This button works after you upload your PDF to static/pdfs/SMFSR.pdf. -->
-                <span class="link-block">
-                  <a href="static/pdfs/SMFSR.pdf" target="_blank" rel="noopener noreferrer"
-                     class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
-                    <span>Paper</span>
-                  </a>
-                </span>
+        <div class="project-name">
 
-                <!-- CODE: Official repository listed in the paper. -->
-                <span class="link-block">
-                  <a href="https://github.com/wzhu121/SMFSR" target="_blank" rel="noopener noreferrer"
-                     class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon"><i class="fab fa-github"></i></span>
-                    <span>Code</span>
-                  </a>
-                </span>
+          SMFSR
 
-                <!-- TODO LINK: Uncomment after you have an arXiv URL.
-                <span class="link-block">
-                  <a href="https://arxiv.org/abs/YOUR_ARXIV_ID" target="_blank" rel="noopener noreferrer"
-                     class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon"><i class="ai ai-arxiv"></i></span>
-                    <span>arXiv</span>
-                  </a>
-                </span>
-                -->
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
-    </section>
 
-    <!-- =======================================================
-         TEASER / FIGURE 1
-         TODO IMAGE: Crop/export paper Figure 1 and save it as:
+
+        <h1 class="paper-title">
+
+          Noise-Started One-Step Real-World Super-Resolution
+          via LR-Conditioned SplitMeanFlow and GAN Refinement
+
+        </h1>
+
+
+        <!-- Authors -->
+
+        <div
+          class="authors"
+          aria-label="Authors"
+        >
+
+
+          <span class="author">
+
+            Wei Zhu<sup>1</sup>,
+
+          </span>
+
+
+          <span class="author">
+
+            Kai Zhang<sup>2,*</sup>,
+
+          </span>
+
+
+          <span class="author">
+
+            Yu Zheng<sup>1</sup>,
+
+          </span>
+
+
+          <span class="author">
+
+            Lei Luo<sup>1,*</sup>,
+
+          </span>
+
+
+          <span class="author">
+
+            Yong Guo<sup>3</sup>,
+
+          </span>
+
+
+          <span class="author">
+
+            Jian Yang<sup>1,2,*</sup>
+
+          </span>
+
+
+        </div>
+
+
+        <!-- Affiliations -->
+
+        <div class="affiliations">
+
+
+          <span>
+
+            <sup>1</sup>
+            PCA Lab, School of Computer Science and Engineering, Nanjing University of Science and Technology
+
+          </span>
+
+
+          <br>
+
+
+          <span>
+
+            <sup>2</sup>
+            PCA Lab, School of Intelligence Science and Technology, Nanjing University
+
+          </span>
+
+
+          <br>
+
+
+          <span>
+
+            <sup>3</sup>
+            South China University of Technology 
+
+          </span>
+
+
+          <br>
+
+
+          <span>
+
+            <sup>*</sup>
+            Corresponding authors
+
+          </span>
+
+
+        </div>
+
+
+
+        <!-- =====================================================
+             Paper / Code / Hugging Face
+             ===================================================== -->
+
+        <nav
+          class="actions"
+          aria-label="Project links"
+        >
+
+
+          <!-- Paper -->
+
+          <a
+            class="action-button"
+            href="https://arxiv.org/abs/2605.09328"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+
+
+            <span
+              class="action-icon"
+              aria-hidden="true"
+            >
+
+              <svg viewBox="0 0 24 24">
+
+                <path
+                  d="M6 2.8h8l4 4V21H6z"
+                ></path>
+
+                <path
+                  d="M14 2.8V7h4"
+                ></path>
+
+                <path
+                  d="M9 12h6M9 16h6"
+                ></path>
+
+              </svg>
+
+            </span>
+
+
+            <span>
+
+              Paper
+
+            </span>
+
+
+          </a>
+
+
+          <!-- Code -->
+
+          <!-- Code -->
+
+          <a
+            class="action-button"
+            href="https://github.com/wzhu121/SMFSR"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+
+            <span
+              class="action-icon"
+              aria-hidden="true"
+            >
+
+              <!-- GitHub Logo -->
+              <svg
+                viewBox="0 0 24 24"
+                role="img"
+                focusable="false"
+                style="fill: currentColor; stroke: none;"
+              >
+
+                <path
+                  d="M12 .7C5.73.7.65 5.78.65 12.05c0 5.02 3.26 9.28 7.78 10.78.57.1.78-.25.78-.55 0-.27-.01-1.17-.02-2.12-3.17.69-3.84-1.34-3.84-1.34-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.73-1.52-2.53-.29-5.19-1.26-5.19-5.62 0-1.24.44-2.25 1.17-3.05-.12-.29-.51-1.45.11-3.02 0 0 .95-.31 3.12 1.16a10.9 10.9 0 0 1 5.68 0c2.17-1.47 3.12-1.16 3.12-1.16.62 1.57.23 2.73.11 3.02.73.8 1.17 1.81 1.17 3.05 0 4.37-2.67 5.33-5.21 5.61.41.35.77 1.04.77 2.1 0 1.52-.01 2.74-.01 3.11 0 .3.21.66.79.55 4.51-1.5 7.76-5.76 7.76-10.78C23.35 5.78 18.27.7 12 .7Z"
+                ></path>
+
+              </svg>
+
+            </span>
+
+
+            <span>
+              Code
+            </span>
+
+          </a>
+
+
+          <!-- Hugging Face -->
+
+          <a
+            class="action-button"
+            href="https://huggingface.co/zw121/SMFSR"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+
+
+            <span
+              class="action-icon hf-icon"
+              aria-hidden="true"
+            >
+
+              🤗
+
+            </span>
+
+
+            <span>
+
+              Hugging Face
+
+            </span>
+
+
+          </a>
+
+
+        </nav>
+
+
+      </div>
+
+
+    </header>
+
+
+
+    <!-- =========================================================
+         TEASER
+
          static/images/teaser.png
-         ======================================================= -->
-    <section class="hero teaser">
-      <div class="container is-max-desktop">
-        <div class="hero-body pt-2">
-          <div class="figure-frame">
-            <img class="hero-figure" src="static/images/teaser.png"
-                 alt="Comparison between vanilla one-step diffusion Real-ISR and the noise-started SMFSR formulation">
-          </div>
-          <p class="figure-caption has-text-centered">
-            <strong>Noise-started one-step Real-ISR.</strong>
-            Unlike one-step methods that directly map LR inputs to HR outputs, SMFSR starts from random Gaussian noise and performs one-step HR generation under LR conditioning, retaining stochastic generative capacity while enabling fast inference.
-          </p>
+         ========================================================= -->
+
+    <section
+      class="section"
+      id="teaser"
+    >
+
+
+      <div class="figure-width">
+
+
+        <div class="figure-shell teaser">
+
+
+          <img
+
+            class="paper-figure"
+
+            src="static/images/teaser.png"
+
+            alt="SMFSR teaser comparing LR-started one-step restoration and noise-started one-step generation"
+
+            decoding="async"
+
+          >
+
+
         </div>
+
+
+        <p class="figure-caption">
+
+          Unlike many diffusion-based one-step methods that
+          directly map LR inputs to HR outputs, our method preserves the
+          noise-started generation paradigm and generates HR images from
+          random noise in a single step under LR conditioning. This design
+          retains the stochastic generative capacity of diffusion models while
+          enabling fast inference.
+
+        </p>
+
+
       </div>
+
+
     </section>
 
-    <!-- =======================================================
+
+
+    <!-- =========================================================
          ABSTRACT
-         ======================================================= -->
-    <section class="section soft-section" id="abstract">
-      <div class="container is-max-desktop">
-        <div class="columns is-centered">
-          <div class="column is-four-fifths">
-            <div class="section-title-wrap">
-              <span class="section-eyebrow">Overview</span>
-              <h2 class="title is-3">Abstract</h2>
-            </div>
+         ========================================================= -->
 
-            <div class="content has-text-justified lead-copy">
-              <p>
-                Pre-trained text-to-image (T2I) diffusion models have shown strong potential for real-world image super-resolution (Real-ISR), owing to their noise-started generation process that enables realistic texture synthesis and captures the one-to-many nature of super-resolution. However, diffusion-based Real-ISR methods still face a fundamental efficiency-quality trade-off. Multi-step methods generate high-quality results by iteratively denoising random Gaussian noise under LR conditioning, but suffer from slow sampling. Recent one-step methods greatly improve efficiency, yet they typically replace noise-started generation with direct LR-to-HR restoration, which weakens stochasticity and limits realistic detail synthesis.
-              </p>
-              <p>
-                To address this issue, we propose SMFSR, a noise-started one-step Real-ISR framework via LR-conditioned SplitMeanFlow and GAN refinement. SMFSR preserves the random-noise starting point of diffusion models and learns a direct noise-to-HR mapping conditioned on the LR image. Interval Splitting Consistency distills the multi-step generative trajectory into a single average-velocity prediction, enabling efficient one-step generation. To compensate for the reduced opportunity for progressive refinement, we further introduce a GAN refinement stage, where a DINOv3-based discriminator enhances realistic texture synthesis and variational score distillation aligns the generated outputs with the natural image distribution under a frozen diffusion teacher. Extensive experiments demonstrate that SMFSR achieves state-of-the-art perceptual quality among one-step diffusion-based Real-ISR methods while retaining fast single-step inference.
-              </p>
-            </div>
-          </div>
+    <section
+      class="section soft"
+      id="abstract"
+    >
+
+
+      <div class="page-width">
+
+
+        <div class="section-heading">
+
+
+          <h2>
+
+            Abstract
+
+          </h2>
+
+
         </div>
+
+
+        <div class="paper-copy">
+
+
+          <p>
+
+            Pre-trained text-to-image (T2I) diffusion models have
+            shown strong potential for real-world image super-resolution
+            (Real-ISR), owing to their noise-started generation process
+            that enables realistic texture synthesis and captures the
+            one-to-many nature of super-resolution.
+
+            However, diffusion-based Real-ISR methods still face a
+            fundamental efficiency-quality trade-off. Multi-step methods
+            generate high-quality results by iteratively denoising random
+            Gaussian noise under LR conditioning, but suffer from slow
+            sampling.
+
+            Recent one-step methods greatly improve efficiency, yet they
+            typically replace noise-started generation with direct
+            LR-to-HR restoration, which weakens stochasticity and limits
+            realistic detail synthesis.
+
+          </p>
+
+
+          <p>
+
+            To address this issue, we propose SMFSR, a noise-started
+            one-step Real-ISR framework via LR-conditioned SplitMeanFlow
+            and GAN refinement.
+
+            SMFSR preserves the random-noise starting point of diffusion
+            models and learns a direct noise-to-HR mapping conditioned on
+            the LR image.
+
+            To this end, Interval Splitting Consistency distills the
+            multi-step generative trajectory into a single average-velocity
+            prediction, enabling efficient one-step generation.
+
+            To compensate for the reduced opportunity for progressive
+            refinement, we further introduce a GAN refinement stage,
+            where a DINOv3-based discriminator enhances realistic texture
+            synthesis and variational score distillation aligns the
+            generated outputs with the natural image distribution under
+            a frozen diffusion teacher.
+
+            Extensive experiments demonstrate that SMFSR achieves
+            state-of-the-art perceptual quality among one-step
+            diffusion-based Real-ISR methods while retaining fast
+            single-step inference.
+
+          </p>
+
+
+        </div>
+
+
       </div>
+
+
     </section>
 
-    <!-- =======================================================
-         KEY IDEAS
-         ======================================================= -->
-    <section class="section" id="key-ideas">
-      <div class="container is-max-desktop">
-        <div class="section-title-wrap">
-          <span class="section-eyebrow">Why SMFSR</span>
-          <h2 class="title is-3">Key Ideas</h2>
-        </div>
 
-        <div class="columns is-variable is-5">
-          <div class="column">
-            <div class="idea-card">
-              <h3>Noise-Started One-Step Generation</h3>
-              <p>
-                SMFSR preserves the random-noise starting point of diffusion models instead of converting the task into deterministic LR-to-HR restoration.
-              </p>
-            </div>
-          </div>
 
-          <div class="column">
-            <div class="idea-card">
-              <h3>LR-Conditioned SplitMeanFlow</h3>
-              <p>
-                Interval Splitting Consistency learns a single average-velocity field spanning the full noise-to-HR trajectory under LR and text conditioning.
-              </p>
-            </div>
-          </div>
+    <!-- =========================================================
+         METHOD
 
-          <div class="column">
-            <div class="idea-card">
-              <h3>GAN-Based Detail Refinement</h3>
-              <p>
-                Adversarial supervision, variational score distillation, and reconstruction regularization compensate for the limited progressive detail refinement of one-step sampling.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =======================================================
-         METHOD / FIGURE 2
-         TODO IMAGE: Export paper Figure 2 and save it as:
          static/images/method.png
-         ======================================================= -->
-    <section class="section soft-section" id="method">
-      <div class="container is-max-desktop">
-        <div class="section-title-wrap">
-          <span class="section-eyebrow">Approach</span>
-          <h2 class="title is-3">Method</h2>
+         ========================================================= -->
+
+    <section
+      class="section"
+      id="method"
+    >
+
+
+      <div class="figure-width">
+
+
+        <div class="section-heading">
+
+
+          <h2>
+
+            Method
+
+          </h2>
+
+
         </div>
 
-        <div class="figure-frame">
-          <img class="section-figure" src="static/images/method.png"
-               alt="Training framework of SMFSR with SplitMeanFlow and GAN-based detail refinement">
+
+        <div class="figure-shell method">
+
+
+          <img
+
+            class="paper-figure"
+
+            src="static/images/method.png"
+
+            alt="Training framework of SMFSR with LR-conditioned SplitMeanFlow and GAN-based detail refinement"
+
+            loading="lazy"
+
+            decoding="async"
+
+          >
+
+
         </div>
 
-        <div class="method-copy content has-text-justified">
+
+        <div class="paper-copy method-copy">
+
+
           <p>
-            <strong>Stage 1: LR-conditioned SplitMeanFlow.</strong>
-            SMFSR learns an average-velocity field over a time interval rather than only an instantaneous denoising direction. Interval Splitting Consistency enforces consistency between a long interval and its two sub-intervals. During inference, setting the interval endpoints to cover the full trajectory enables direct one-step generation from Gaussian noise to the HR latent under LR conditioning.
+
+            Training framework of SMFSR. SMFSR is trained in two stages: (1) Noise-started one-step generation with LR-conditioned
+            SplitMeanFlow, where Interval Splitting Consistency trains a student model to predict the average velocity from random noise to the HR
+            latent, enabling one-step noise-to-HR sampling with r = 0 and t = 1; and (2) GAN-based detail refinement, where adversarial loss, VSD
+            loss, and regularization loss are introduced to enhance perceptual details and visual realism.
+
           </p>
-          <p>
-            <strong>Stage 2: GAN-based detail refinement.</strong>
-            Because a single average-velocity prediction has fewer opportunities for progressive texture formation, the student is further optimized with a DINOv3-based discriminator, variational score distillation, and reconstruction regularization. The resulting pipeline can be interpreted as noise-to-structure-to-detail generation.
-          </p>
+
+
         </div>
+
+
       </div>
+
+
     </section>
 
-    <!-- =======================================================
-         QUANTITATIVE RESULTS
-         Values copied from Table 1 of the paper.
-         ======================================================= -->
-    <section class="section" id="quantitative-results">
-      <div class="container is-max-desktop">
-        <div class="section-title-wrap">
-          <span class="section-eyebrow">Experiments</span>
-          <h2 class="title is-3">Quantitative Results</h2>
+
+
+    <!-- =========================================================
+         VISUAL RESULTS
+
+         static/images/results.png
+         ========================================================= -->
+
+    <section
+      class="section soft"
+      id="results"
+    >
+
+
+      <div class="figure-width">
+
+
+        <div class="section-heading">
+
+
+          <h2>
+
+            Visual Results
+
+          </h2>
+
+
         </div>
 
-        <div class="columns is-variable is-4 mb-5">
-          <div class="column">
-            <div class="metric-card has-text-centered">
-              <span class="metric-value">0.7772</span>
-              <span class="metric-label">CLIPIQA on RealLQ250</span>
-              <p>Highest score in the Table 1 comparison.</p>
-            </div>
-          </div>
 
-          <div class="column">
-            <div class="metric-card has-text-centered">
-              <span class="metric-value">72.21</span>
-              <span class="metric-label">MUSIQ on RealLQ250</span>
-              <p>Strong perceptual quality on the unpaired real-world benchmark.</p>
-            </div>
-          </div>
+        <div class="figure-shell results">
 
-          <div class="column">
-            <div class="metric-card has-text-centered">
-              <span class="metric-value">0.6410</span>
-              <span class="metric-label">MANIQA on RealLQ250</span>
-              <p>Highest score in the Table 1 comparison.</p>
-            </div>
-          </div>
+
+          <img
+
+            class="paper-figure"
+
+            src="static/images/results.png"
+
+            alt="Visual comparison of SMFSR with diffusion-based real-world image super-resolution methods"
+
+            loading="lazy"
+
+            decoding="async"
+
+          >
+
+
         </div>
 
-        <div class="results-table-wrap">
-          <table class="table is-fullwidth is-hoverable results-table">
-            <thead>
-              <tr>
-                <th>Dataset</th>
-                <th>CLIPIQA &uarr;</th>
-                <th>MUSIQ &uarr;</th>
-                <th>MANIQA &uarr;</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>DIV2K</td>
-                <td class="ours">0.7545</td>
-                <td class="ours">69.97</td>
-                <td class="ours">0.6611</td>
-              </tr>
-              <tr>
-                <td>DRealSR</td>
-                <td class="ours">0.7161</td>
-                <td class="ours">65.93</td>
-                <td class="ours">0.6220</td>
-              </tr>
-              <tr>
-                <td>RealSR</td>
-                <td class="ours">0.7065</td>
-                <td class="ours">69.17</td>
-                <td class="ours">0.6642</td>
-              </tr>
-              <tr>
-                <td>RealLQ250</td>
-                <td class="ours">0.7772</td>
-                <td class="ours">72.21</td>
-                <td class="ours">0.6410</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
 
-        <p class="figure-caption has-text-centered">
-          Non-reference perceptual metrics reported for SMFSR in Table 1. For paired benchmarks, the paper also reports PSNR, SSIM, and LPIPS to characterize the perception-distortion trade-off.
+        <p class="figure-caption">
+
+          Visual comparison with representative diffusion-based
+          Real-ISR methods, where “s” denotes the number of
+          inference steps.
+
         </p>
+
+
       </div>
+
+
     </section>
 
-    <!-- =======================================================
-         VISUAL COMPARISON / FIGURE 3
-         TODO IMAGE: Export paper Figure 3 and save it as:
-         static/images/visual_comparison.png
-         ======================================================= -->
-    <section class="section soft-section" id="visual-results">
-      <div class="container is-max-desktop">
-        <div class="section-title-wrap">
-          <span class="section-eyebrow">Visual Quality</span>
-          <h2 class="title is-3">Comparison with State-of-the-Art Methods</h2>
-        </div>
 
-        <div class="figure-frame">
-          <img class="section-figure" src="static/images/visual_comparison.png"
-               alt="Visual comparison of SMFSR with diffusion-based real-world super-resolution methods">
-        </div>
 
-        <p class="figure-caption has-text-centered">
-          Visual comparison with representative diffusion-based Real-ISR methods. The paper reports that SMFSR better preserves local detail clarity and global structural coherence while using one-step inference.
-        </p>
-      </div>
-    </section>
+    <!-- =========================================================
+         DETAIL REFINEMENT & DIVERSITY
 
-    <!-- =======================================================
-         DIVERSITY / FIGURE 5
-         TODO IMAGE: Export paper Figure 5 and save it as:
          static/images/diversity.png
-         ======================================================= -->
-    <section class="section" id="diversity">
-      <div class="container is-max-desktop">
-        <div class="section-title-wrap">
-          <span class="section-eyebrow">Stochastic Generation</span>
-          <h2 class="title is-3">Detail Refinement and Output Diversity</h2>
+         ========================================================= -->
+
+    <section
+      class="section"
+      id="diversity"
+    >
+
+
+      <div class="figure-width">
+
+
+        <div class="section-heading">
+
+
+          <h2>
+
+            Detail Refinement &amp; Diversity
+
+          </h2>
+
+
         </div>
 
-        <div class="figure-frame">
-          <img class="section-figure" src="static/images/diversity.png"
-               alt="Ablation of refinement losses and multiple SMFSR outputs generated from different random seeds">
+
+        <div class="figure-shell diversity">
+
+
+          <img
+
+            class="paper-figure"
+
+            src="static/images/diversity.png"
+
+            alt="Comparison of refinement losses and outputs generated with different random seeds"
+
+            loading="lazy"
+
+            decoding="async"
+
+          >
+
+
         </div>
 
-        <p class="figure-caption has-text-centered">
-          The last four examples use different random seeds for the same LR condition, illustrating that the noise-started formulation preserves controlled stochasticity while maintaining consistent global structure.
+
+        <p class="figure-caption">
+
+          The last four columns use different random seeds,
+          showing the stochasticity preserved by noise-started
+          one-step generation while maintaining consistent
+          global structure.
+
         </p>
+
+
       </div>
+
+
     </section>
 
-    <!-- =======================================================
-         EFFICIENCY
-         Values copied from Table 2 of the paper.
-         ======================================================= -->
-    <section class="section soft-section" id="efficiency">
-      <div class="container is-max-desktop">
-        <div class="section-title-wrap">
-          <span class="section-eyebrow">Efficiency</span>
-          <h2 class="title is-3">Fast Single-Step Inference</h2>
-        </div>
 
-        <div class="columns is-centered is-variable is-5">
-          <div class="column is-one-third">
-            <div class="metric-card has-text-centered">
-              <span class="metric-value">1</span>
-              <span class="metric-label">Sampling Step</span>
-              <p>The full noise-to-HR trajectory is represented by a single learned average-velocity prediction.</p>
-            </div>
-          </div>
 
-          <div class="column is-one-third">
-            <div class="metric-card has-text-centered">
-              <span class="metric-value">0.22 s</span>
-              <span class="metric-label">Inference Time</span>
-              <p>Reported for 128&times;128 LQ inputs producing 512&times;512 outputs on an NVIDIA RTX 5880 GPU.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =======================================================
+    <!-- =========================================================
          BIBTEX
-         TODO: Replace the entry type, key, venue, year, and paper URL
-         once the official publication information is available.
-         ======================================================= -->
-    <section class="section" id="BibTeX">
-      <div class="container is-max-desktop content">
-        <div class="bibtex-header">
-          <h2 class="title">BibTeX</h2>
-          <button class="copy-bibtex-btn" onclick="copyBibTeX()" title="Copy BibTeX to clipboard">
-            <i class="fas fa-copy"></i>
-            <span class="copy-text">Copy</span>
+         ========================================================= -->
+
+    <section
+      class="section soft"
+      id="bibtex"
+    >
+
+
+      <div class="page-width">
+
+
+        <div class="section-heading">
+
+
+          <h2>
+
+            BibTeX
+
+          </h2>
+
+
+        </div>
+
+
+        <div class="bibtex-wrap">
+
+
+          <button
+
+            class="copy-button"
+
+            id="copyBibtexBtn"
+
+            type="button"
+
+            aria-label="Copy BibTeX"
+
+          >
+
+
+            <span aria-hidden="true">
+
+              ⧉
+
+            </span>
+
+
+            <span id="copyLabel">
+
+              Copy
+
+            </span>
+
+
           </button>
-        </div>
 
-        <div class="todo-note">
-          TODO: The paper PDF does not provide final venue/year metadata. Replace the placeholder fields below after the official citation is available.
-        </div>
 
-        <pre id="bibtex-code" class="bibtex-block"><code>@article{zhu_smfsr,
+          <pre id="bibtexCode"><code>@article{zhu2026smfsr,
   title   = {Noise-Started One-Step Real-World Super-Resolution via LR-Conditioned SplitMeanFlow and GAN Refinement},
   author  = {Zhu, Wei and Zhang, Kai and Zheng, Yu and Luo, Lei and Guo, Yong and Yang, Jian},
-  journal = {TODO: Conference or Journal Name},
-  year    = {TODO: Year},
-  url     = {TODO: Official Paper URL}
+  journal = {arXiv preprint arXiv:2605.09328},
+  year    = {2026},
+  url     = {https://arxiv.org/abs/2605.09328}
 }</code></pre>
+
+
+        </div>
+
+
       </div>
+
+
     </section>
+
 
   </main>
 
+
+
+  <!-- =========================================================
+       FOOTER
+       ========================================================= -->
+
   <footer class="footer">
-    <div class="container">
-      <div class="columns is-centered">
-        <div class="column is-8">
-          <div class="content has-text-centered">
-            <p>
-              This page is based on the
-              <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noopener noreferrer">Academic Project Page Template</a>,
-              adapted from the Nerfies project page.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+
+
+    <p>
+
+      This page is based on the
+
+      <a
+        href="https://github.com/eliahuhorwitz/Academic-project-page-template"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+
+        Academic Project Page Template
+
+      </a>,
+
+      adapted from the Nerfies project page.
+
+    </p>
+
+
   </footer>
+
+
+
+  <!-- =========================================================
+       Copy BibTeX
+       ========================================================= -->
+
+  <script>
+
+    (function () {
+
+
+      const button =
+        document.getElementById(
+          "copyBibtexBtn"
+        );
+
+
+      const label =
+        document.getElementById(
+          "copyLabel"
+        );
+
+
+      const code =
+        document.getElementById(
+          "bibtexCode"
+        );
+
+
+      if (
+        !button ||
+        !label ||
+        !code
+      ) {
+
+        return;
+
+      }
+
+
+      function resetLabel() {
+
+
+        window.setTimeout(
+
+          function () {
+
+            label.textContent =
+              "Copy";
+
+          },
+
+          1400
+
+        );
+
+
+      }
+
+
+      function legacyCopy(text) {
+
+
+        const textarea =
+          document.createElement(
+            "textarea"
+          );
+
+
+        textarea.value =
+          text;
+
+
+        textarea.setAttribute(
+          "readonly",
+          ""
+        );
+
+
+        textarea.style.position =
+          "fixed";
+
+
+        textarea.style.opacity =
+          "0";
+
+
+        document.body.appendChild(
+          textarea
+        );
+
+
+        textarea.select();
+
+
+        let success =
+          false;
+
+
+        try {
+
+
+          success =
+            document.execCommand(
+              "copy"
+            );
+
+
+        } catch (error) {
+
+
+          success =
+            false;
+
+
+        }
+
+
+        document.body.removeChild(
+          textarea
+        );
+
+
+        return success;
+
+
+      }
+
+
+      button.addEventListener(
+
+        "click",
+
+        async function () {
+
+
+          const text =
+            code.innerText;
+
+
+          try {
+
+
+            if (
+              navigator.clipboard &&
+              window.isSecureContext
+            ) {
+
+
+              await navigator.clipboard.writeText(
+                text
+              );
+
+
+              label.textContent =
+                "Copied";
+
+
+            } else if (
+              legacyCopy(text)
+            ) {
+
+
+              label.textContent =
+                "Copied";
+
+
+            } else {
+
+
+              label.textContent =
+                "Select & copy";
+
+
+            }
+
+
+          } catch (error) {
+
+
+            label.textContent =
+              legacyCopy(text)
+                ? "Copied"
+                : "Select & copy";
+
+
+          }
+
+
+          resetLabel();
+
+
+        }
+
+      );
+
+
+    })();
+
+  </script>
+
+
 </body>
+
 </html>
